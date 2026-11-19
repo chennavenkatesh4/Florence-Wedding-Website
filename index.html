@@ -101,6 +101,7 @@
       transform-style: preserve-3d;
       transition: transform 1.4s cubic-bezier(0.25, 1, 0.35, 1);
     }
+
     .door-right {
       transform-origin: right center;
       transform-style: preserve-3d;
@@ -110,6 +111,7 @@
     .card-opened .door-left {
       transform: rotateY(-135deg);
     }
+
     .card-opened .door-right {
       transform: rotateY(135deg);
     }
@@ -118,6 +120,7 @@
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
+
     .face-back {
       transform: rotateY(180deg);
     }
@@ -126,6 +129,7 @@
     .flip-card {
       perspective: 1400px;
     }
+
     .flip-card-inner {
       position: relative;
       width: 100%;
@@ -133,15 +137,18 @@
       transition: transform 0.85s cubic-bezier(0.25, 0.8, 0.25, 1);
       transform-style: preserve-3d;
     }
+
     .flip-card.flipped .flip-card-inner {
       transform: rotateY(180deg);
     }
+
     .flip-front, .flip-back {
       position: absolute;
       inset: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
     }
+
     .flip-back {
       transform: rotateY(180deg);
     }
@@ -152,7 +159,7 @@
       transition: transform 0.25s ease-out, box-shadow 0.3s ease;
     }
 
-    /* Mughal Floral Arch Clip Path matching uploaded portrait arch */
+    /* Mughal Floral Arch Clip Path */
     .mughal-arch {
       clip-path: path('M 0,480 L 0,145 C 0,95 45,75 65,68 C 85,22 140,8 175,0 C 210,8 265,22 285,68 C 305,75 350,95 350,145 L 350,480 Z');
     }
@@ -162,6 +169,7 @@
       0%, 100% { transform: translateY(0px) rotate(0deg); }
       50% { transform: translateY(-10px) rotate(1.5deg); }
     }
+
     .animate-float {
       animation: floatSlow 6s ease-in-out infinite;
     }
@@ -172,6 +180,7 @@
       transform: translateY(28px);
       transition: opacity 0.9s ease-out, transform 0.9s ease-out;
     }
+
     .reveal-up.visible {
       opacity: 1;
       transform: translateY(0);
@@ -181,14 +190,57 @@
     ::-webkit-scrollbar {
       width: 8px;
     }
+
     ::-webkit-scrollbar-track {
       background: #FCF9F5;
     }
+
     ::-webkit-scrollbar-thumb {
       background: #D5C295;
       border-radius: 9999px;
     }
-  </style>
+
+    /* =========================================
+       WEDDING INVITATION INITIAL PAGE LOCK
+    ========================================= */
+
+    /* Hide inside invitation until card opens */
+    body:not(.invitation-open) #invitation {
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    /* Lock scrolling before opening */
+    body:not(.invitation-open) {
+      height: 100vh !important;
+      overflow: hidden !important;
+      position: fixed !important;
+      width: 100% !important;
+      top: 0;
+      left: 0;
+    }
+
+    /* Hide all website sections except the cover */
+    body:not(.invitation-open) section:not(#top),
+    body:not(.invitation-open) footer {
+      display: none !important;
+    }
+
+    /* Show invitation after clicking the cover */
+    body.invitation-open #invitation {
+      visibility: visible;
+      opacity: 1;
+      transition: opacity 0.8s ease 0.5s;
+    }
+
+    /* Restore normal website scrolling after opening */
+    body.invitation-open {
+      position: relative !important;
+      height: auto !important;
+      overflow-x: hidden !important;
+      overflow-y: auto !important;
+    }
+</style>
 </head>
 <body class="watercolor-bg relative selection:bg-blush selection:text-charcoal">
 
@@ -879,15 +931,26 @@
 
   const card = document.getElementById('gatefold-card');
   const overlay = document.getElementById('cover-overlay');
+  const invitation = document.getElementById('invitation');
 
-  // Open the 3D invitation doors
-  document.getElementById('invitation').classList.remove('hidden');
+  // Start 3D door-opening animation
+  card.classList.add('card-opened');
+
+  // Reveal invitation content
+  invitation.classList.remove('hidden');
+
+  // Unlock the complete website
+  document.body.classList.add('invitation-open');
+
+  // Enable website scrolling
+  document.documentElement.style.overflow = 'auto';
+  document.body.style.overflow = 'auto';
 
   // Celebration effects
   burstPetals();
   playGentleHarpChord();
 
-  // Reveal the complete website after the animation
+  // Remove cover after 3D animation
   setTimeout(() => {
     overlay.style.transition = 'opacity 0.8s ease';
     overlay.style.opacity = '0';
@@ -901,16 +964,35 @@
 }
 
     function replay3DCard() {
-      const card = document.getElementById('gatefold-card');
-      const overlay = document.getElementById('cover-overlay');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      
-      overlay.style.opacity = '1';
-      overlay.style.pointerEvents = 'auto';
-      card.classList.remove('card-opened');
-      isCardOpened = false;
-      showToast('3D Invitation Cover reset — tap the card to unfold!');
-    }
+  const card = document.getElementById('gatefold-card');
+  const overlay = document.getElementById('cover-overlay');
+  const invitation = document.getElementById('invitation');
+
+  // Scroll to the top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Lock the website again
+  document.body.classList.remove('invitation-open');
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+
+  // Reset the 3D doors
+  card.classList.remove('card-opened');
+
+  // Hide invitation content
+  invitation.classList.add('hidden');
+
+  // Restore the cover overlay
+  overlay.style.display = 'flex';
+  overlay.style.transition = 'opacity 0.8s ease';
+  overlay.style.opacity = '1';
+  overlay.style.pointerEvents = 'auto';
+
+  // Reset opening state
+  isCardOpened = false;
+
+  showToast('3D Invitation Cover reset — tap the card to unfold!');
+}
 
     // -----------------------------------------------------------------------
     // 3. Tone.js Gentle Romantic Harp Chimes (Synthesized, No External URLs)
