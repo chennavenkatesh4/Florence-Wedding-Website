@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Wedding of Richard Noel & Florence | Dec 06, 2026</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Three.js for 3D Floating Petals, Golden Musical Notes & Shimmering Dust -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  
+  <!-- Tone.js for gentle romantic harp/chime ambiance on card open (optional toggle) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <!-- Google Fonts: Great Vibes, Alex Brush, Cormorant Garamond, Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ivory: '#FCF9F5',
+            cream: '#F5EFE6',
+            gold: {
+              light: '#E5C675',
+              DEFAULT: '#B89242',
+              dark: '#8C6B26',
+            },
+            blush: '#EBD3D8',
+            lavender: '#D5C7DF',
+            powder: '#C7DCE5',
+            sage: '#8FA38A',
+            charcoal: '#3A3532',
+          },
+          fontFamily: {
+            script: ['"Great Vibes"', '"Alex Brush"', 'cursive'],
+            serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans: ['Montserrat', 'sans-serif'],
+          },
+          boxShadow: {
+            'card': '0 25px 60px -15px rgba(140, 107, 38, 0.18), 0 10px 25px -10px rgba(58, 53, 50, 0.08)',
+            'gold-glow': '0 0 30px rgba(212, 175, 55, 0.35)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom Watercolor Paper & 3D Styles */
+    body {
+      background-color: #FCF9F5;
+      color: #3A3532;
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+    }
+
+    /* Subtle watercolor washes on background */
+    .watercolor-bg {
+      background-image: 
+        radial-gradient(circle at 8% 12%, rgba(213, 199, 223, 0.38) 0%, transparent 42%),
+        radial-gradient(circle at 92% 18%, rgba(199, 220, 229, 0.42) 0%, transparent 45%),
+        radial-gradient(circle at 15% 58%, rgba(235, 211, 216, 0.35) 0%, transparent 48%),
+        radial-gradient(circle at 88% 78%, rgba(229, 198, 117, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 50% 95%, rgba(213, 199, 223, 0.3) 0%, transparent 50%);
+    }
+
+    /* Metallic Gold Foil Text Effect */
+    .gold-foil-text {
+      background: linear-gradient(135deg, #9A7428 0%, #DFBE6F 28%, #B58E3E 52%, #F1D88B 76%, #8C6820 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 200% auto;
+      animation: goldShimmer 6s linear infinite;
+    }
+
+    @keyframes goldShimmer {
+      0% { background-position: 0% center; }
+      100% { background-position: 200% center; }
+    }
+
+    /* 3D Perspective Stage for the Opening Gatefold Card */
+    .perspective-stage {
+      perspective: 2200px;
+    }
+
+    .book-wrapper {
+      transform-style: preserve-3d;
+      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Left & Right 3D Gatefold Doors */
+    .door-left {
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 1.4s cubic-bezier(0.25, 1, 0.35, 1);
+    }
+    .door-right {
+      transform-origin: right center;
+      transform-style: preserve-3d;
+      transition: transform 1.4s cubic-bezier(0.25, 1, 0.35, 1);
+    }
+
+    .card-opened .door-left {
+      transform: rotateY(-135deg);
+    }
+    .card-opened .door-right {
+      transform: rotateY(135deg);
+    }
+
+    .face-front, .face-back {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .face-back {
+      transform: rotateY(180deg);
+    }
+
+    /* 3D Flip Event Cards */
+    .flip-card {
+      perspective: 1400px;
+    }
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.85s cubic-bezier(0.25, 0.8, 0.25, 1);
+      transform-style: preserve-3d;
+    }
+    .flip-card.flipped .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+    .flip-front, .flip-back {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .flip-back {
+      transform: rotateY(180deg);
+    }
+
+    /* 3D Tilt Interactive Surface */
+    .tilt-card {
+      transform-style: preserve-3d;
+      transition: transform 0.25s ease-out, box-shadow 0.3s ease;
+    }
+
+    /* Mughal Floral Arch Clip Path matching uploaded portrait arch */
+    .mughal-arch {
+      clip-path: path('M 0,480 L 0,145 C 0,95 45,75 65,68 C 85,22 140,8 175,0 C 210,8 265,22 285,68 C 305,75 350,95 350,145 L 350,480 Z');
+    }
+
+    /* Gentle Floating Animation */
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-10px) rotate(1.5deg); }
+    }
+    .animate-float {
+      animation: floatSlow 6s ease-in-out infinite;
+    }
+
+    /* Scroll Reveal Utility */
+    .reveal-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+    }
+    .reveal-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #FCF9F5;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D5C295;
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="watercolor-bg relative selection:bg-blush selection:text-charcoal">
+
+  <!-- Three.js Fullscreen 3D Canvas for Floating Petals, Golden Notes & Stardust -->
+  <canvas id="three-canvas" class="fixed inset-0 w-full h-full pointer-events-none z-20"></canvas>
+
+  <!-- Toast Notification Banner (No alert() ever used) -->
+  <div id="toast-box" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-500 pointer-events-none">
+    <div class="bg-white/95 backdrop-blur-md border border-gold/40 shadow-card rounded-2xl px-5 py-3.5 flex items-center gap-3 max-w-sm">
+      <span class="w-8 h-8 rounded-full bg-gold/15 text-gold-dark flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+      </span>
+      <p id="toast-message" class="font-sans text-xs sm:text-sm text-charcoal font-medium"></p>
+    </div>
+  </div>
+
+  <!-- Top Floating Navigation & Music / 3D Controls -->
+  <header class="fixed top-0 left-0 right-0 z-40 transition-all duration-300 px-4 py-3 sm:px-8">
+    <div class="max-w-6xl mx-auto bg-white/80 backdrop-blur-md border border-gold/25 rounded-full px-4 sm:px-6 py-2.5 shadow-sm flex items-center justify-between">
+      <a href="#top" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 rounded-full border border-gold/60 flex items-center justify-center bg-ivory group-hover:scale-105 transition">
+          <span class="font-serif font-semibold text-sm text-gold-dark tracking-tighter">R<span class="italic font-script text-base">&amp;</span>F</span>
+        </div>
+        <span class="hidden sm:inline font-serif text-lg tracking-wide text-charcoal">Richard <span class="text-gold italic">&amp;</span> Florence</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-6 font-sans text-xs uppercase tracking-widest text-charcoal/80">
+        <a href="#invitation" class="hover:text-gold-dark transition">Invitation</a>
+        <a href="#couple-arch" class="hover:text-gold-dark transition">Couple</a>
+        <a href="#events" class="hover:text-gold-dark transition">Events</a>
+        <a href="#blessings" class="hover:text-gold-dark transition">Blessings</a>
+      </nav>
+
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Ambient Harp Chime Toggle -->
+        <button id="music-toggle" onclick="toggleAmbientChimes()" title="Toggle Romantic Harp Chimes" class="p-2.5 rounded-full bg-cream/90 hover:bg-blush/50 border border-gold/30 text-gold-dark transition flex items-center gap-1.5 text-xs font-sans">
+          <svg id="music-icon-off" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          <svg id="music-icon-on" class="w-4 h-4 hidden animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+          <span class="hidden sm:inline" id="music-label">Chimes</span>
+        </button>
+
+        <!-- Replay 3D Card Animation -->
+        <button onclick="replay3DCard()" class="px-3.5 py-2 rounded-full bg-gold text-white hover:bg-gold-dark transition font-sans text-xs tracking-wider uppercase shadow-sm">
+          3D Card
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 1: INTERACTIVE 3D GATEFOLD WEDDING INVITATION HERO            -->
+  <!-- ===================================================================== -->
+  <section id="top" class="relative min-h-screen pt-24 pb-16 px-4 sm:px-6 flex flex-col items-center justify-center z-10 overflow-hidden">
+    
+    <!-- Top Scripture Banner -->
+    <div class="text-center max-w-2xl mx-auto mb-6 animate-fade-in">
+      <p class="font-serif italic text-base sm:text-xl text-charcoal/85 tracking-wide">
+        “This is the LORD’s doing; it is marvellous in our eyes.”
+      </p>
+      <p class="font-sans text-[11px] sm:text-xs uppercase tracking-[0.25em] text-gold-dark font-semibold mt-1">
+        Psalm 118:23
+      </p>
+    </div>
+
+    <!-- 3D Gatefold Card Interactive Stage -->
+    <div class="perspective-stage w-full max-w-4xl mx-auto my-2">
+      <div id="gatefold-card" class="book-wrapper relative w-full min-h-[540px] sm:min-h-[600px] rounded-3xl shadow-card bg-white/95 border border-gold/35 overflow-visible">
+        
+        <!-- Decorative SVG Watercolor Corner Florals Inside Card -->
+        <svg class="absolute top-0 left-0 w-44 sm:w-64 h-44 sm:h-64 pointer-events-none opacity-85 rounded-tl-3xl" viewBox="0 0 240 240" fill="none">
+          <circle cx="35" cy="35" r="55" fill="#D5C7DF" fill-opacity="0.45"/>
+          <circle cx="85" cy="25" r="40" fill="#EBD3D8" fill-opacity="0.5"/>
+          <circle cx="25" cy="95" r="42" fill="#C7DCE5" fill-opacity="0.55"/>
+          <path d="M15 140 C40 100, 80 85, 130 95 C95 115, 65 130, 15 140 Z" fill="#8FA38A" fill-opacity="0.35"/>
+          <path d="M90 15 C110 50, 145 70, 190 65 C150 45, 125 25, 90 15 Z" fill="#8FA38A" fill-opacity="0.3"/>
+          <circle cx="52" cy="48" r="18" fill="#DFC3D8" stroke="#B89242" stroke-width="0.6" stroke-opacity="0.5"/>
+          <circle cx="52" cy="48" r="6" fill="#E5C675"/>
+        </svg>
+
+        <svg class="absolute bottom-0 right-0 w-44 sm:w-64 h-44 sm:h-64 pointer-events-none opacity-85 rounded-br-3xl rotate-180" viewBox="0 0 240 240" fill="none">
+          <circle cx="35" cy="35" r="55" fill="#D5C7DF" fill-opacity="0.45"/>
+          <circle cx="85" cy="25" r="40" fill="#EBD3D8" fill-opacity="0.5"/>
+          <circle cx="25" cy="95" r="42" fill="#C7DCE5" fill-opacity="0.55"/>
+          <path d="M15 140 C40 100, 80 85, 130 95 C95 115, 65 130, 15 140 Z" fill="#8FA38A" fill-opacity="0.35"/>
+          <circle cx="52" cy="48" r="18" fill="#DFC3D8" stroke="#B89242" stroke-width="0.6" stroke-opacity="0.5"/>
+          <circle cx="52" cy="48" r="6" fill="#E5C675"/>
+        </svg>
+
+        <!-- INSIDE REVEALED INVITATION CONTENT -->
+        <div id="invitation" class="relative z-10 px-6 py-10 sm:px-14 sm:py-12 flex flex-col items-center text-center justify-between min-h-[540px] sm:min-h-[600px]">
+          
+          <!-- Botanical R & F Monogram Emblem -->
+          <div class="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center mb-2">
+            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 120 120" fill="none">
+              <circle cx="60" cy="60" r="48" stroke="#9A8FA8" stroke-width="1.3" stroke-dasharray="235 45" stroke-linecap="round"/>
+              <!-- Botanical Leaves on Wreath -->
+              <path d="M103 44 C112 38, 116 30, 114 24 C107 26, 102 33, 103 44 Z" stroke="#8FA38A" stroke-width="1.2" fill="#EBF2EA"/>
+              <path d="M107 58 C117 55, 120 48, 118 42 C111 44, 106 50, 107 58 Z" stroke="#8FA38A" stroke-width="1.2" fill="#EBF2EA"/>
+              <path d="M105 73 C115 73, 119 67, 118 61 C111 61, 106 66, 105 73 Z" stroke="#8FA38A" stroke-width="1.2" fill="#EBF2EA"/>
+              <path d="M98 86 C108 89, 113 84, 113 78 C106 77, 100 80, 98 86 Z" stroke="#8FA38A" stroke-width="1.2" fill="#EBF2EA"/>
+            </svg>
+            <div class="relative font-serif text-3xl sm:text-4xl gold-foil-text font-semibold select-none">
+              <span class="relative -top-2 -left-1">R</span>
+              <span class="font-script text-2xl sm:text-3xl mx-0.5">&amp;</span>
+              <span class="relative top-2 left-0.5">F</span>
+            </div>
+          </div>
+
+          <!-- Hosts -->
+          <div class="space-y-1">
+            <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-gold-dark tracking-wide">
+              Mrs. Sarala &amp; Mr. Samuel Bidari
+            </h2>
+            <p class="font-sans text-xs uppercase tracking-[0.25em] text-charcoal/70">Dharwad</p>
+          </div>
+
+          <p class="font-serif text-lg sm:text-xl text-charcoal/85 max-w-xl leading-relaxed my-3">
+            cordially invite you with your family on the auspicious occasion of the wedding of their beloved daughter
+          </p>
+
+          <!-- Couple Names -->
+          <div class="my-2">
+            <h1 class="font-script text-5xl sm:text-7xl gold-foil-text py-1 leading-tight">
+              Florence
+            </h1>
+            <p class="font-serif italic text-lg sm:text-xl text-charcoal/70 my-1">with</p>
+            <h1 class="font-script text-5xl sm:text-7xl gold-foil-text py-1 leading-tight">
+              Richard Noel
+            </h1>
+            <p class="font-serif text-sm sm:text-base text-charcoal/75 mt-2">
+              (Son of <span class="font-semibold">Mrs. Tabitha &amp; Late Ediwin S. Puneet</span> of Vijayapur)
+            </p>
+          </div>
+
+          <!-- Primary Wedding Date Highlight -->
+          <div class="mt-4 pt-4 border-t border-gold/25 w-full max-w-md">
+            <p class="font-sans text-xs uppercase tracking-[0.22em] text-charcoal/70">To be solemnized on Sunday</p>
+            <div class="flex items-center justify-center gap-4 my-2 font-serif text-2xl sm:text-3xl text-charcoal">
+              <span>Dec</span>
+              <span class="px-3.5 py-0.5 border-x-2 border-gold text-3xl sm:text-4xl font-bold text-gold-dark">06</span>
+              <span>2026</span>
+            </div>
+            <p class="font-sans text-xs sm:text-sm font-medium text-gold-dark tracking-wider">11:30 AM • All Saints’ Church, Vijayapur</p>
+          </div>
+
+          <!-- Action Buttons inside opened card -->
+          <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <a href="#events" class="px-6 py-2.5 rounded-full bg-gold text-white font-sans text-xs uppercase tracking-widest hover:bg-gold-dark transition shadow-sm">
+              View Venues &amp; Schedule
+            </a>
+            <button onclick="openRsvpModal()" class="px-6 py-2.5 rounded-full bg-ivory border border-gold text-gold-dark font-sans text-xs uppercase tracking-widest hover:bg-blush/30 transition">
+              Send Blessings / RSVP
+            </button>
+          </div>
+        </div>
+
+        <!-- =============================================================== -->
+        <!-- 3D GATEFOLD COVER DOORS (Overlaying the card until clicked)     -->
+        <!-- =============================================================== -->
+        <div id="cover-overlay" class="absolute inset-0 z-30 flex cursor-pointer" onclick="open3DCard()">
+          
+          <!-- Left Door -->
+          <div class="door-left w-1/2 h-full bg-gradient-to-br from-[#FDFBF7] via-[#F9F4EC] to-[#F3EBE0] border-r border-gold/30 rounded-l-3xl shadow-xl relative overflow-hidden flex flex-col justify-between p-5 sm:p-10">
+            <!-- Top-Left Watercolor Floral Art -->
+            <svg class="w-36 sm:w-56 h-36 sm:h-56 -ml-6 -mt-6 opacity-90" viewBox="0 0 220 220" fill="none">
+              <circle cx="55" cy="50" r="48" fill="#D5C7DF" fill-opacity="0.65"/>
+              <circle cx="42" cy="112" r="42" fill="#C7DCE5" fill-opacity="0.7"/>
+              <circle cx="112" cy="40" r="35" fill="#EBD3D8" fill-opacity="0.65"/>
+              <path d="M90 60 C125 45, 165 48, 195 35 C165 65, 130 75, 90 60 Z" fill="#C5B8C8" fill-opacity="0.5"/>
+              <path d="M60 110 C85 135, 95 165, 85 195 C65 165, 55 135, 60 110 Z" fill="#C5B8C8" fill-opacity="0.45"/>
+              <circle cx="58" cy="52" r="22" fill="#DFC5DC" stroke="#A68246" stroke-width="0.7"/>
+              <circle cx="58" cy="52" r="7" fill="#D99B26"/>
+            </svg>
+
+            <!-- Guest Addressing Lines matching uploaded cover -->
+            <div class="my-auto pl-2 sm:pl-6 max-w-xs">
+              <p class="font-serif text-sm sm:text-lg text-charcoal/80 leading-snug">To,<br/>Mrs. &amp; Mr.</p>
+              <div class="mt-3 space-y-3.5">
+                <div class="h-px bg-charcoal/35 w-full"></div>
+                <div class="h-px bg-charcoal/35 w-5/6 ml-auto"></div>
+                <div class="h-px bg-charcoal/35 w-4/6 ml-auto"></div>
+              </div>
+            </div>
+
+            <!-- Bottom-Left R & F Botanical Crest -->
+            <div class="flex items-center gap-3">
+              <div class="relative w-16 h-16 sm:w-20 sm:h-20 flex items-center justify-center">
+                <svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="40" stroke="#8C829B" stroke-width="1.2" stroke-dasharray="195 38"/>
+                  <path d="M86 38 C94 33, 97 26, 95 21 C89 23, 85 29, 86 38 Z" stroke="#8C829B" stroke-width="1"/>
+                  <path d="M89 50 C97 47, 100 41, 98 36 C92 38, 88 43, 89 50 Z" stroke="#8C829B" stroke-width="1"/>
+                  <path d="M87 62 C95 62, 99 57, 98 52 C92 52, 88 56, 87 62 Z" stroke="#8C829B" stroke-width="1"/>
+                </svg>
+                <span class="font-serif text-xl sm:text-2xl font-bold gold-foil-text">R<span class="font-script text-lg">&amp;</span>F</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Door -->
+          <div class="door-right w-1/2 h-full bg-gradient-to-bl from-[#FDFBF7] via-[#F9F4EC] to-[#F3EBE0] border-l border-gold/30 rounded-r-3xl shadow-xl relative overflow-hidden flex flex-col justify-between items-end p-5 sm:p-10 text-right">
+            
+            <!-- Gold Calligraphy "The Wedding Of RICHARD & FLORENCE" -->
+            <div class="mt-4 sm:mt-8 pr-1 sm:pr-4">
+              <div class="inline-block text-gold mb-1">
+                <svg class="w-6 h-6 sm:w-8 sm:h-8 ml-auto" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M16 26 C16 26 5 18 5 10.5 C5 7 8 4.5 11 4.5 C13.5 4.5 15.2 6 16 7.8 C16.8 6 18.5 4.5 21 4.5 C24 4.5 27 7 27 10.5 C27 18 16 26 16 26 Z"/>
+                </svg>
+              </div>
+              <h2 class="font-script text-4xl sm:text-6xl gold-foil-text leading-none">
+                The<br/>Wedding<br/>Of
+              </h2>
+              <p class="font-serif text-xs sm:text-base tracking-[0.22em] text-charcoal/85 uppercase mt-3 sm:mt-4 font-semibold">
+                RICHARD &amp; FLORENCE
+              </p>
+            </div>
+
+            <!-- Interactive Wax Seal / Tap to Open Prompt on Center Seam -->
+            <div class="my-auto self-start -ml-3 sm:-ml-4 z-20">
+              <div class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-white/95 border border-gold shadow-gold-glow flex items-center gap-2 animate-bounce">
+                <span class="w-2.5 h-2.5 rounded-full bg-gold animate-ping"></span>
+                <span class="font-sans text-[10px] sm:text-xs uppercase tracking-widest font-semibold text-gold-dark">Tap to Open Card</span>
+              </div>
+            </div>
+
+            <!-- Bottom-Right Watercolor Floral Art -->
+            <svg class="w-36 sm:w-56 h-36 sm:h-56 -mr-6 -mb-6 opacity-90 rotate-180" viewBox="0 0 220 220" fill="none">
+              <circle cx="55" cy="50" r="48" fill="#D5C7DF" fill-opacity="0.65"/>
+              <circle cx="42" cy="112" r="42" fill="#C7DCE5" fill-opacity="0.7"/>
+              <circle cx="112" cy="40" r="35" fill="#EBD3D8" fill-opacity="0.65"/>
+              <circle cx="58" cy="52" r="22" fill="#DFC5DC" stroke="#A68246" stroke-width="0.7"/>
+              <circle cx="58" cy="52" r="7" fill="#D99B26"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Countdown Timer Ribbon -->
+    <div class="mt-8 w-full max-w-3xl mx-auto">
+      <div class="bg-white/80 backdrop-blur-md border border-gold/30 rounded-2xl p-4 sm:p-6 shadow-sm text-center">
+        <p class="font-sans text-[11px] uppercase tracking-[0.25em] text-gold-dark font-semibold mb-3">
+          Counting Down to Forever • December 06, 2026
+        </p>
+        <div id="countdown-grid" class="grid grid-cols-4 gap-2 sm:gap-6 max-w-lg mx-auto">
+          <div class="bg-ivory/90 rounded-xl py-2.5 px-2 border border-gold/20">
+            <span id="cd-days" class="block font-serif text-2xl sm:text-4xl font-bold text-charcoal">00</span>
+            <span class="font-sans text-[10px] uppercase tracking-widest text-charcoal/65">Days</span>
+          </div>
+          <div class="bg-ivory/90 rounded-xl py-2.5 px-2 border border-gold/20">
+            <span id="cd-hours" class="block font-serif text-2xl sm:text-4xl font-bold text-charcoal">00</span>
+            <span class="font-sans text-[10px] uppercase tracking-widest text-charcoal/65">Hours</span>
+          </div>
+          <div class="bg-ivory/90 rounded-xl py-2.5 px-2 border border-gold/20">
+            <span id="cd-mins" class="block font-serif text-2xl sm:text-4xl font-bold text-charcoal">00</span>
+            <span class="font-sans text-[10px] uppercase tracking-widest text-charcoal/65">Minutes</span>
+          </div>
+          <div class="bg-ivory/90 rounded-xl py-2.5 px-2 border border-gold/20">
+            <span id="cd-secs" class="block font-serif text-2xl sm:text-4xl font-bold text-gold-dark">00</span>
+            <span class="font-sans text-[10px] uppercase tracking-widest text-charcoal/65">Seconds</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 2: COUPLE PORTRAIT IN ORNATE WATERCOLOR MUGHAL ARCH & GALLERY  -->
+  <!-- ===================================================================== -->
+  <section id="couple-arch" class="relative py-16 sm:py-24 px-4 sm:px-6 z-10 reveal-up">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="font-sans text-xs uppercase tracking-[0.3em] text-gold-dark font-semibold">Two Hearts, One Soul</span>
+        <h2 class="font-script text-5xl sm:text-6xl gold-foil-text mt-1">Florence &amp; Richard Noel</h2>
+        <p class="font-serif text-lg sm:text-xl text-charcoal/80 mt-2">
+          “Therefore what God has joined together, let no one separate.”
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        
+        <!-- Ornate 3D Interactive Mughal Floral Arch Portrait Frame -->
+        <div class="lg:col-span-6 flex justify-center">
+          <div id="arch-tilt-container" class="tilt-card relative w-[330px] sm:w-[390px] h-[470px] sm:h-[540px] rounded-3xl bg-gradient-to-b from-[#FBF4EA] via-[#FDF9F3] to-[#F6E8DA] p-4 sm:p-5 shadow-card border border-gold/40 flex items-center justify-center overflow-hidden">
+            
+            <!-- Peach & Gold Watercolor Corner Accents matching uploaded portrait arch -->
+            <div class="absolute -top-10 -left-10 w-44 h-44 rounded-full bg-[#E9A97E]/30 blur-xl pointer-events-none"></div>
+            <div class="absolute -bottom-10 -right-10 w-48 h-48 rounded-full bg-[#E9A97E]/35 blur-xl pointer-events-none"></div>
+
+            <!-- Decorative Top-Right & Bottom-Left Peach/Gold Botanical SVGs -->
+            <svg class="absolute top-1 right-1 w-32 h-32 z-20 pointer-events-none" viewBox="0 0 140 140" fill="none">
+              <circle cx="95" cy="42" r="24" fill="#F2B894" fill-opacity="0.85" stroke="#B89242" stroke-width="0.8"/>
+              <circle cx="95" cy="42" r="8" fill="#D99B26"/>
+              <circle cx="115" cy="68" r="18" fill="#FFFDF9" fill-opacity="0.9" stroke="#B89242" stroke-width="0.8"/>
+              <circle cx="115" cy="68" r="5" fill="#D99B26"/>
+              <path d="M72 30 C52 22, 35 28, 22 40 C40 42, 58 38, 72 30 Z" fill="#8FA38A" fill-opacity="0.75"/>
+              <path d="M105 88 C108 108, 102 122, 92 132 C90 115, 95 100, 105 88 Z" fill="#C49E59" fill-opacity="0.75"/>
+            </svg>
+
+            <svg class="absolute bottom-1 left-1 w-32 h-32 z-20 pointer-events-none rotate-180" viewBox="0 0 140 140" fill="none">
+              <circle cx="95" cy="42" r="24" fill="#F2B894" fill-opacity="0.85" stroke="#B89242" stroke-width="0.8"/>
+              <circle cx="95" cy="42" r="8" fill="#D99B26"/>
+              <circle cx="115" cy="68" r="18" fill="#FFFDF9" fill-opacity="0.9" stroke="#B89242" stroke-width="0.8"/>
+              <circle cx="115" cy="68" r="5" fill="#D99B26"/>
+              <path d="M72 30 C52 22, 35 28, 22 40 C40 42, 58 38, 72 30 Z" fill="#8FA38A" fill-opacity="0.75"/>
+            </svg>
+
+            <!-- Gold Mughal Arch SVG Border Overlay -->
+            <svg class="absolute inset-3 w-[calc(100%-1.5rem)] h-[calc(100%-1.5rem)] z-10 pointer-events-none" viewBox="0 0 350 480" fill="none" preserveAspectRatio="none">
+              <path d="M 8,472 L 8,148 C 8,98 50,78 70,71 C 88,26 142,12 175,4 C 208,12 262,26 280,71 C 300,78 342,98 342,148 L 342,472" stroke="url(#archGoldGrad)" stroke-width="3.5" stroke-linecap="round"/>
+              <defs>
+                <linearGradient id="archGoldGrad" x1="0" y1="0" x2="350" y2="480" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#D9B664"/>
+                  <stop offset="50%" stop-color="#9A7428"/>
+                  <stop offset="100%" stop-color="#E5C675"/>
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Main Couple Portrait Photo inside Mughal Arch -->
+            <div class="relative w-full h-full flex items-center justify-center overflow-hidden rounded-t-[160px] rounded-b-2xl border-2 border-gold/50 shadow-inner bg-cream">
+              <img 
+                id="main-arch-photo"
+                src="Watercolor Wedding Portrait Arch (1).png" 
+                onerror="this.onerror=null; this.src='WhatsApp Image 2026-11-18 at 8.56.50 PM.jpeg'; this.dataset.fallback='true';"
+                alt="Florence & Richard Noel Wedding Portrait"
+                class="w-full h-full object-cover object-top transition-all duration-700"
+              />
+              <!-- Soft Golden Bottom Vignette -->
+              <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#F6E8DA] via-[#F6E8DA]/50 to-transparent pointer-events-none"></div>
+              <div class="absolute bottom-3 inset-x-0 text-center z-20">
+                <span class="font-script text-2xl sm:text-3xl text-gold-dark drop-shadow-sm">Richard &amp; Florence</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Story, Photo Switcher & Local Photo Uploader -->
+        <div class="lg:col-span-6 space-y-6">
+          <div class="bg-white/85 backdrop-blur-md border border-gold/30 rounded-3xl p-6 sm:p-8 shadow-card">
+            <h3 class="font-serif text-2xl sm:text-3xl font-semibold text-charcoal mb-3">
+              A Journey Blessed by Grace
+            </h3>
+            <p class="font-serif text-lg text-charcoal/85 leading-relaxed mb-4">
+              With hearts full of gratitude to Almighty God and with the blessings of our beloved parents, <span class="font-semibold text-gold-dark">Mrs. Sarala &amp; Mr. Samuel Bidari</span> and <span class="font-semibold text-gold-dark">Mrs. Tabitha &amp; Late Ediwin S. Puneet</span>, we joyfully invite you to witness and celebrate the beginning of our lifelong covenant together.
+            </p>
+            <p class="font-serif italic text-base text-charcoal/75">
+              With best compliments from: Bidari &amp; Puneet Family, Relatives &amp; Friends.
+            </p>
+
+            <!-- Interactive Photo Gallery Switcher for Couple's Photos -->
+            <div class="mt-6 pt-6 border-t border-gold/20">
+              <div class="flex items-center justify-between mb-3">
+                <span class="font-sans text-xs uppercase tracking-widest text-gold-dark font-semibold">Couple Moments Gallery</span>
+                <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cream hover:bg-blush/40 border border-gold/35 font-sans text-[11px] font-medium text-charcoal transition">
+                  <svg class="w-3.5 h-3.5 text-gold-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                  <span>Upload Photo</span>
+                  <input type="file" accept="image/*" class="hidden" onchange="handleCustomPhotoUpload(event)" />
+                </label>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3" id="gallery-thumbnails">
+                <!-- Photo 1: Watercolor Wedding Portrait Arch -->
+                <button onclick="selectArchPhoto('Watercolor Wedding Portrait Arch (1).png', this)" class="gallery-thumb ring-2 ring-gold rounded-2xl overflow-hidden aspect-[3/4] bg-cream relative group focus:outline-none">
+                  <img src="Watercolor Wedding Portrait Arch (1).png" onerror="this.src='https://placehold.co/300x400/F6E8DA/8C6B26?text=Floral+Arch+Portrait'" alt="Floral Arch Portrait" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"/>
+                  <span class="absolute bottom-1 inset-x-1 bg-white/85 backdrop-blur-xs text-[10px] font-sans py-0.5 rounded-lg text-charcoal truncate">Floral Arch</span>
+                </button>
+
+                <!-- Photo 2: Garden Couple Portrait -->
+                <button onclick="selectArchPhoto('WhatsApp Image 2026-11-18 at 8.56.50 PM.jpeg', this)" class="gallery-thumb rounded-2xl overflow-hidden aspect-[3/4] bg-cream relative group focus:outline-none opacity-80 hover:opacity-100 transition">
+                  <img src="WhatsApp Image 2026-11-18 at 8.56.50 PM.jpeg" onerror="this.src='https://placehold.co/300x400/EBD3D8/3A3532?text=Together+Forever'" alt="Florence & Richard" class="w-full h-full object-cover object-top group-hover:scale-105 transition duration-500"/>
+                  <span class="absolute bottom-1 inset-x-1 bg-white/85 backdrop-blur-xs text-[10px] font-sans py-0.5 rounded-lg text-charcoal truncate">Together</span>
+                </button>
+
+                <!-- Photo 3: Florence amidst Pink Blossoms -->
+                <button onclick="selectArchPhoto('image_b3a7af.jpg', this)" class="gallery-thumb rounded-2xl overflow-hidden aspect-[3/4] bg-cream relative group focus:outline-none opacity-80 hover:opacity-100 transition">
+                  <img src="image_b3a7af.jpg" onerror="this.src='https://placehold.co/300x400/D5C7DF/3A3532?text=Florence+Blossoms'" alt="Florence in Blossoms" class="w-full h-full object-cover object-center group-hover:scale-105 transition duration-500"/>
+                  <span class="absolute bottom-1 inset-x-1 bg-white/85 backdrop-blur-xs text-[10px] font-sans py-0.5 rounded-lg text-charcoal truncate">Florence</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 3: 3D FLIP WEDDING & RECEPTION EVENT CARDS                    -->
+  <!-- ===================================================================== -->
+  <section id="events" class="relative py-16 sm:py-24 px-4 sm:px-6 z-10 reveal-up">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-14">
+        <span class="font-sans text-xs uppercase tracking-[0.3em] text-gold-dark font-semibold">Celebration Schedule</span>
+        <h2 class="font-script text-5xl sm:text-6xl gold-foil-text mt-1">Wedding Events</h2>
+        <p class="font-serif text-lg text-charcoal/80 mt-2">
+          Tap any card to flip in 3D for directions, lunch details, and calendar reminders.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+        
+        <!-- EVENT CARD 1: VIJAYAPUR WEDDING & LUNCH -->
+        <div id="event-card-1" class="flip-card h-[520px] sm:h-[500px] cursor-pointer" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            
+            <!-- Front Face -->
+            <div class="flip-front rounded-3xl bg-white/95 border border-gold/40 shadow-card p-7 sm:p-9 flex flex-col justify-between text-center relative overflow-hidden">
+              <div class="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-lavender/40 blur-xl pointer-events-none"></div>
+              <div class="absolute -bottom-12 -left-12 w-36 h-36 rounded-full bg-powder/45 blur-xl pointer-events-none"></div>
+
+              <div>
+                <span class="inline-block px-3.5 py-1 rounded-full bg-cream border border-gold/30 font-sans text-[11px] uppercase tracking-widest text-gold-dark font-semibold">
+                  Holy Matrimony &amp; Lunch
+                </span>
+                <h3 class="font-serif text-3xl sm:text-4xl font-semibold text-charcoal mt-4">
+                  Wedding Ceremony
+                </h3>
+                <p class="font-sans text-xs uppercase tracking-[0.22em] text-gold-dark mt-1">Vijayapur</p>
+              </div>
+
+              <div class="my-4 py-4 border-y border-gold/25 space-y-2">
+                <p class="font-serif text-2xl sm:text-3xl font-bold text-charcoal">Sunday, December 06, 2026</p>
+                <p class="font-sans text-sm font-semibold text-gold-dark tracking-wider">11:30 AM</p>
+                <div class="pt-2">
+                  <p class="font-serif text-xl font-semibold text-charcoal">All Saints’ Church</p>
+                  <p class="font-serif text-base text-charcoal/80">Beside Gagan Mahal, D.C Office Road, Vijayapur</p>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <p class="font-serif italic text-base text-charcoal/80">
+                  Followed by Reception &amp; Lunch at <span class="font-semibold">Bharat Function Garden</span> from 1:30 PM onwards
+                </p>
+                <div class="inline-flex items-center gap-1.5 font-sans text-xs uppercase tracking-widest text-gold-dark font-semibold">
+                  <span>Tap to Flip for Lunch Venue &amp; Map</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="flip-back rounded-3xl bg-gradient-to-br from-[#FDFBF7] to-[#F4ECE1] border border-gold/50 shadow-card p-7 sm:p-9 flex flex-col justify-between text-center">
+              <div>
+                <span class="inline-block px-3.5 py-1 rounded-full bg-gold/15 font-sans text-[11px] uppercase tracking-widest text-gold-dark font-semibold">
+                  Reception &amp; Fellowship Lunch
+                </span>
+                <h4 class="font-serif text-2xl sm:text-3xl font-semibold text-charcoal mt-3">
+                  Bharat Function Garden
+                </h4>
+                <p class="font-serif text-lg text-charcoal/85 mt-2 leading-relaxed">
+                  Behind Bharat Swimming Pool,<br/>
+                  Bagalkot Road, Sadashivnagar,<br/>
+                  Vijayapura
+                </p>
+                <p class="font-sans text-xs uppercase tracking-widest text-gold-dark font-semibold mt-3">
+                  Sunday, Dec 06, 2026 • From 1:30 PM Onwards
+                </p>
+              </div>
+
+              <div class="space-y-3 my-4" onclick="event.stopPropagation()">
+                <a href="https://www.google.com/maps/search/?api=1&query=All+Saints+Church+DC+Office+Road+Vijayapur" target="_blank" rel="noopener noreferrer" class="block w-full py-2.5 px-4 rounded-full bg-white border border-gold/40 hover:bg-cream text-charcoal font-sans text-xs uppercase tracking-wider font-medium transition">
+                  📍 Map: All Saints’ Church, Vijayapur
+                </a>
+                <a href="https://www.google.com/maps/search/?api=1&query=Bharat+Function+Garden+Sadashivnagar+Vijayapura" target="_blank" rel="noopener noreferrer" class="block w-full py-2.5 px-4 rounded-full bg-white border border-gold/40 hover:bg-cream text-charcoal font-sans text-xs uppercase tracking-wider font-medium transition">
+                  📍 Map: Bharat Function Garden
+                </a>
+                <button onclick="downloadICS('wedding')" class="w-full py-2.5 px-4 rounded-full bg-gold text-white hover:bg-gold-dark font-sans text-xs uppercase tracking-widest font-semibold transition shadow-sm">
+                  📅 Add Wedding to Calendar
+                </button>
+              </div>
+
+              <p class="font-sans text-[11px] uppercase tracking-widest text-charcoal/60">Tap card to flip back</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- EVENT CARD 2: RECEPTION AT DHARWAD -->
+        <div id="event-card-2" class="flip-card h-[520px] sm:h-[500px] cursor-pointer" onclick="this.classList.toggle('flipped')">
+          <div class="flip-card-inner">
+            
+            <!-- Front Face -->
+            <div class="flip-front rounded-3xl bg-white/95 border border-gold/40 shadow-card p-7 sm:p-9 flex flex-col justify-between text-center relative overflow-hidden">
+              <div class="absolute -top-12 -left-12 w-36 h-36 rounded-full bg-blush/45 blur-xl pointer-events-none"></div>
+              <div class="absolute -bottom-12 -right-12 w-36 h-36 rounded-full bg-lavender/40 blur-xl pointer-events-none"></div>
+
+              <div>
+                <span class="inline-block px-3.5 py-1 rounded-full bg-cream border border-gold/30 font-sans text-[11px] uppercase tracking-widest text-gold-dark font-semibold">
+                  Evening Celebration
+                </span>
+                <h3 class="font-serif text-3xl sm:text-4xl font-semibold text-charcoal mt-4">
+                  Reception at Dharwad
+                </h3>
+                <p class="font-sans text-xs uppercase tracking-[0.22em] text-gold-dark mt-1">Fellowship Dinner</p>
+              </div>
+
+              <div class="my-4 py-4 border-y border-gold/25 space-y-2">
+                <p class="font-serif text-2xl sm:text-3xl font-bold text-charcoal">Tuesday, December 08, 2026</p>
+                <p class="font-sans text-sm font-semibold text-gold-dark tracking-wider">6:30 PM</p>
+                <div class="pt-2">
+                  <p class="font-serif text-xl font-semibold text-charcoal">Risch Memorial Hall</p>
+                  <p class="font-serif text-base text-charcoal/80">Station Road, Dharwad</p>
+                </div>
+              </div>
+
+              <div class="space-y-3">
+                <p class="font-serif italic text-base text-charcoal/80">
+                  Kindly join us for the wedding reception and fellowship dinner as we celebrate this joyous occasion
+                </p>
+                <div class="inline-flex items-center gap-1.5 font-sans text-xs uppercase tracking-widest text-gold-dark font-semibold">
+                  <span>Tap to Flip for Map &amp; Calendar</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Back Face -->
+            <div class="flip-back rounded-3xl bg-gradient-to-br from-[#FDFBF7] to-[#F4ECE1] border border-gold/50 shadow-card p-7 sm:p-9 flex flex-col justify-between text-center">
+              <div>
+                <span class="inline-block px-3.5 py-1 rounded-full bg-gold/15 font-sans text-[11px] uppercase tracking-widest text-gold-dark font-semibold">
+                  Dharwad Reception Venue
+                </span>
+                <h4 class="font-serif text-2xl sm:text-3xl font-semibold text-charcoal mt-3">
+                  Risch Memorial Hall
+                </h4>
+                <p class="font-serif text-lg text-charcoal/85 mt-2 leading-relaxed">
+                  Station Road,<br/>
+                  Dharwad, Karnataka
+                </p>
+                <p class="font-sans text-xs uppercase tracking-widest text-gold-dark font-semibold mt-3">
+                  Tuesday, Dec 08, 2026 • 6:30 PM Onwards
+                </p>
+              </div>
+
+              <div class="space-y-3 my-4" onclick="event.stopPropagation()">
+                <a href="https://www.google.com/maps/search/?api=1&query=Risch+Memorial+Hall+Station+Road+Dharwad" target="_blank" rel="noopener noreferrer" class="block w-full py-2.5 px-4 rounded-full bg-white border border-gold/40 hover:bg-cream text-charcoal font-sans text-xs uppercase tracking-wider font-medium transition">
+                  📍 Open Risch Memorial Hall in Google Maps
+                </a>
+                <button onclick="downloadICS('reception')" class="w-full py-2.5 px-4 rounded-full bg-gold text-white hover:bg-gold-dark font-sans text-xs uppercase tracking-widest font-semibold transition shadow-sm">
+                  📅 Add Reception to Calendar
+                </button>
+              </div>
+
+              <p class="font-sans text-[11px] uppercase tracking-widest text-charcoal/60">Tap card to flip back</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 4: INTERACTIVE GUESTBOOK & BLESSINGS WALL                     -->
+  <!-- ===================================================================== -->
+  <section id="blessings" class="relative py-16 sm:py-24 px-4 sm:px-6 z-10 reveal-up">
+    <div class="max-w-5xl mx-auto">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <span class="font-sans text-xs uppercase tracking-[0.3em] text-gold-dark font-semibold">Wishes &amp; Prayers</span>
+        <h2 class="font-script text-5xl sm:text-6xl gold-foil-text mt-1">Blessings Wall</h2>
+        <p class="font-serif text-lg text-charcoal/80 mt-2">
+          Leave a heartfelt prayer, blessing, or RSVP note for Florence &amp; Richard Noel.
+        </p>
+      </div>
+
+      <div class="text-center mb-10">
+        <button onclick="openRsvpModal()" class="px-8 py-3.5 rounded-full bg-gold text-white hover:bg-gold-dark font-sans text-xs uppercase tracking-widest font-semibold shadow-card transition transform hover:-translate-y-0.5">
+          ✍️ Write a Blessing &amp; RSVP
+        </button>
+      </div>
+
+      <!-- Blessings Cards Grid -->
+      <div id="blessings-grid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Pre-populated Family & Friends Blessings -->
+        <div class="bg-white/90 backdrop-blur-md border border-gold/30 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+          <p class="font-serif italic text-lg text-charcoal/90 leading-relaxed">
+            “May the Lord bless your union abundantly and fill your home with peace, joy, and unwavering love all the days of your lives.”
+          </p>
+          <div class="mt-4 pt-3 border-t border-gold/20 flex items-center justify-between">
+            <span class="font-serif font-semibold text-gold-dark">Bidari &amp; Puneet Families</span>
+            <span class="font-sans text-[10px] uppercase tracking-wider text-charcoal/50">Family</span>
+          </div>
+        </div>
+
+        <div class="bg-white/90 backdrop-blur-md border border-gold/30 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+          <p class="font-serif italic text-lg text-charcoal/90 leading-relaxed">
+            “Wishing dear Florence and Richard Noel a lifetime of laughter, grace, and cherished memories together. So excited to celebrate in Vijayapur &amp; Dharwad!”
+          </p>
+          <div class="mt-4 pt-3 border-t border-gold/20 flex items-center justify-between">
+            <span class="font-serif font-semibold text-gold-dark">Relatives &amp; Friends</span>
+            <span class="font-sans text-[10px] uppercase tracking-wider text-charcoal/50">Attending Both</span>
+          </div>
+        </div>
+
+        <div class="bg-white/90 backdrop-blur-md border border-gold/30 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+          <p class="font-serif italic text-lg text-charcoal/90 leading-relaxed">
+            “This is truly the Lord’s doing! Congratulations to both of you as you step into this beautiful new chapter.”
+          </p>
+          <div class="mt-4 pt-3 border-t border-gold/20 flex items-center justify-between">
+            <span class="font-serif font-semibold text-gold-dark">Church Fellowship</span>
+            <span class="font-sans text-[10px] uppercase tracking-wider text-charcoal/50">Blessings</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- FOOTER                                                                -->
+  <!-- ===================================================================== -->
+  <footer class="relative z-10 py-12 px-4 border-t border-gold/25 bg-white/60 backdrop-blur-sm text-center">
+    <div class="max-w-xl mx-auto space-y-3">
+      <div class="w-12 h-12 mx-auto rounded-full border border-gold/60 flex items-center justify-center bg-ivory">
+        <span class="font-serif font-bold text-base gold-foil-text">R&amp;F</span>
+      </div>
+      <h3 class="font-script text-4xl gold-foil-text">Florence &amp; Richard Noel</h3>
+      <p class="font-serif text-base text-charcoal/75">
+        December 06, 2026 • Vijayapur &nbsp;|&nbsp; December 08, 2026 • Dharwad
+      </p>
+      <p class="font-sans text-[11px] uppercase tracking-[0.2em] text-charcoal/60 pt-2">
+        With Best Compliments from Bidari &amp; Puneet Family, Relatives &amp; Friends
+      </p>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- RSVP & BLESSINGS MODAL                                                -->
+  <!-- ===================================================================== -->
+  <div id="rsvp-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-charcoal/45 backdrop-blur-xs">
+    <div class="bg-ivory border border-gold/40 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl relative animate-fade-in">
+      <button onclick="closeRsvpModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-cream hover:bg-blush/50 flex items-center justify-center text-charcoal transition" aria-label="Close modal">
+        ✕
+      </button>
+
+      <div class="text-center mb-5">
+        <span class="font-sans text-[11px] uppercase tracking-[0.25em] text-gold-dark font-semibold">Join Our Joy</span>
+        <h3 class="font-script text-4xl gold-foil-text mt-1">RSVP &amp; Blessings</h3>
+      </div>
+
+      <form id="rsvp-form" onsubmit="submitBlessing(event)" class="space-y-4">
+        <div>
+          <label class="block font-sans text-xs uppercase tracking-wider text-charcoal/80 mb-1">Your Name(s) *</label>
+          <input type="text" id="guest-name" required placeholder="e.g., Mr. & Mrs. David" class="w-full px-4 py-2.5 rounded-xl bg-white border border-gold/30 font-serif text-base focus:outline-none focus:border-gold"/>
+        </div>
+
+        <div>
+          <label class="block font-sans text-xs uppercase tracking-wider text-charcoal/80 mb-1">Events Attending</label>
+          <select id="guest-event" class="w-full px-4 py-2.5 rounded-xl bg-white border border-gold/30 font-serif text-base focus:outline-none focus:border-gold">
+            <option value="Vijayapur & Dharwad">Both Vijayapur Wedding &amp; Dharwad Reception</option>
+            <option value="Vijayapur Wedding (Dec 06)">Vijayapur Wedding &amp; Lunch (Dec 06)</option>
+            <option value="Dharwad Reception (Dec 08)">Dharwad Reception &amp; Dinner (Dec 08)</option>
+            <option value="Sending Blessings from Afar">Sending Blessings from Afar</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-sans text-xs uppercase tracking-wider text-charcoal/80 mb-1">Your Blessing / Message *</label>
+          <textarea id="guest-message" rows="3" required placeholder="Write a warm wish or prayer for Florence & Richard..." class="w-full px-4 py-2.5 rounded-xl bg-white border border-gold/30 font-serif text-base focus:outline-none focus:border-gold"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-full bg-gold hover:bg-gold-dark text-white font-sans text-xs uppercase tracking-widest font-semibold shadow-md transition">
+          Post to Blessings Wall
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT: 3D THREE.JS SCENE, GATEFOLD ANIMATION, COUNTDOWN & LOGIC  -->
+  <!-- ===================================================================== -->
+  <script>
+    // -----------------------------------------------------------------------
+    // 1. Toast Notification Helper (Replaces alert())
+    // -----------------------------------------------------------------------
+    function showToast(message) {
+      const box = document.getElementById('toast-box');
+      const msg = document.getElementById('toast-message');
+      msg.textContent = message;
+      box.classList.remove('translate-y-24', 'opacity-0');
+      setTimeout(() => {
+        box.classList.add('translate-y-24', 'opacity-0');
+      }, 3800);
+    }
+
+    // -----------------------------------------------------------------------
+    // 2. 3D Gatefold Card Open / Replay Logic
+    // -----------------------------------------------------------------------
+    let isCardOpened = false;
+
+    function open3DCard() {
+      if (isCardOpened) return;
+      isCardOpened = true;
+      const card = document.getElementById('gatefold-card');
+      const overlay = document.getElementById('cover-overlay');
+      card.classList.add('card-opened');
+      
+      // Trigger celebratory burst of 3D petals
+      burstPetals();
+      playGentleHarpChord();
+
+      setTimeout(() => {
+        overlay.style.pointerEvents = 'none';
+        overlay.style.opacity = '0';
+        overlay.style.transition = 'opacity 0.6s ease';
+      }, 950);
+    }
+
+    function replay3DCard() {
+      const card = document.getElementById('gatefold-card');
+      const overlay = document.getElementById('cover-overlay');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      
+      overlay.style.opacity = '1';
+      overlay.style.pointerEvents = 'auto';
+      card.classList.remove('card-opened');
+      isCardOpened = false;
+      showToast('3D Invitation Cover reset — tap the card to unfold!');
+    }
+
+    // -----------------------------------------------------------------------
+    // 3. Tone.js Gentle Romantic Harp Chimes (Synthesized, No External URLs)
+    // -----------------------------------------------------------------------
+    let chimesEnabled = false;
+    let chimeInterval = null;
+    let synth = null;
+
+    async function toggleAmbientChimes() {
+      try {
+        if (!chimesEnabled) {
+          await Tone.start();
+          if (!synth) {
+            synth = new Tone.PolySynth(Tone.Synth, {
+              oscillator: { type: 'sine' },
+              envelope: { attack: 0.15, decay: 1.4, sustain: 0.2, release: 2.5 }
+            }).toDestination();
+            synth.volume.value = -16;
+          }
+          chimesEnabled = true;
+          document.getElementById('music-icon-off').classList.add('hidden');
+          document.getElementById('music-icon-on').classList.remove('hidden');
+          document.getElementById('music-label').textContent = 'Playing';
+          playGentleHarpChord();
+
+          const notes = [['C5', 'E5', 'G5', 'B5'], ['A4', 'C5', 'E5', 'G5'], ['F4', 'A4', 'C5', 'E5'], ['G4', 'B4', 'D5', 'F#5']];
+          let idx = 0;
+          chimeInterval = setInterval(() => {
+            if (chimesEnabled && synth) {
+              const chord = notes[idx % notes.length];
+              chord.forEach((n, i) => {
+                synth.triggerAttackRelease(n, '2n', Tone.now() + i * 0.22);
+              });
+              idx++;
+            }
+          }, 4200);
+          showToast('Romantic harp chimes enabled');
+        } else {
+          chimesEnabled = false;
+          clearInterval(chimeInterval);
+          document.getElementById('music-icon-off').classList.remove('hidden');
+          document.getElementById('music-icon-on').classList.add('hidden');
+          document.getElementById('music-label').textContent = 'Chimes';
+        }
+      } catch (e) {
+        console.warn('Audio context interaction pending:', e);
+      }
+    }
+
+    function playGentleHarpChord() {
+      if (!chimesEnabled || !synth) return;
+      const arpeggio = ['C5', 'E5', 'G5', 'B5', 'D6'];
+      arpeggio.forEach((note, i) => {
+        synth.triggerAttackRelease(note, '2n', Tone.now() + i * 0.14);
+      });
+    }
+
+    // -----------------------------------------------------------------------
+    // 4. Live Countdown Timer to Dec 06, 2026 11:30 AM IST (+05:30)
+    // -----------------------------------------------------------------------
+    const weddingDate = new Date('2026-12-06T11:30:00+05:30').getTime();
+
+    function updateCountdown() {
+      const now = Date.now();
+      const diff = Math.max(0, weddingDate - now);
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const mins = Math.floor((diff / 1000 / 60) % 60);
+      const secs = Math.floor((diff / 1000) % 60);
+
+      document.getElementById('cd-days').textContent = String(days).padStart(2, '0');
+      document.getElementById('cd-hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('cd-mins').textContent = String(mins).padStart(2, '0');
+      document.getElementById('cd-secs').textContent = String(secs).padStart(2, '0');
+    }
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // -----------------------------------------------------------------------
+    // 5. Couple Portrait Arch Switcher & Custom Uploader
+    // -----------------------------------------------------------------------
+    function selectArchPhoto(src, btnEl) {
+      const mainImg = document.getElementById('main-arch-photo');
+      mainImg.style.opacity = '0.25';
+      setTimeout(() => {
+        mainImg.src = src;
+        mainImg.style.opacity = '1';
+      }, 220);
+
+      document.querySelectorAll('.gallery-thumb').forEach(el => {
+        el.classList.remove('ring-2', 'ring-gold');
+        el.classList.add('opacity-80');
+      });
+      if (btnEl) {
+        btnEl.classList.add('ring-2', 'ring-gold');
+        btnEl.classList.remove('opacity-80');
+      }
+    }
+
+    function handleCustomPhotoUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        selectArchPhoto(dataUrl, null);
+        showToast('Couple portrait updated in the Mughal Floral Arch!');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // -----------------------------------------------------------------------
+    // 6. 3D Mouse Tilt Interaction for Mughal Portrait Arch
+    // -----------------------------------------------------------------------
+    const archContainer = document.getElementById('arch-tilt-container');
+    if (archContainer) {
+      archContainer.addEventListener('mousemove', (e) => {
+        const rect = archContainer.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        archContainer.style.transform = `perspective(1000px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg)`;
+      });
+      archContainer.addEventListener('mouseleave', () => {
+        archContainer.style.transform = 'perspective(1000px) rotateY(0deg) rotateX(0deg)';
+      });
+    }
+
+    // -----------------------------------------------------------------------
+    // 7. Calendar (.ics) Generator for Vijayapur Wedding & Dharwad Reception
+    // -----------------------------------------------------------------------
+    function downloadICS(type) {
+      let title, start, end, location, desc;
+      if (type === 'wedding') {
+        title = 'Wedding of Florence & Richard Noel';
+        start = '20261206T060000Z'; // 11:30 AM IST
+        end = '20261206T100000Z';   // 3:30 PM IST
+        location = "All Saints' Church, Beside Gagan Mahal, D.C Office Road, Vijayapur (Lunch at Bharat Function Garden)";
+        desc = 'Holy Matrimony at All Saints Church at 11:30 AM followed by Reception & Lunch at Bharat Function Garden, Sadashivnagar, Vijayapura.';
+      } else {
+        title = 'Wedding Reception of Florence & Richard Noel (Dharwad)';
+        start = '20261208T130000Z'; // 6:30 PM IST
+        end = '20261208T163000Z';   // 10:00 PM IST
+        location = 'Risch Memorial Hall, Station Road, Dharwad';
+        desc = 'Wedding Reception and Fellowship Dinner hosted by Mrs. Sarala & Mr. Samuel Bidari.';
+      }
+
+      const icsContent = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//Richard & Florence Wedding//EN',
+        'BEGIN:VEVENT',
+        `DTSTART:${start}`,
+        `DTEND:${end}`,
+        `SUMMARY:${title}`,
+        `LOCATION:${location}`,
+        `DESCRIPTION:${desc}`,
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${type === 'wedding' ? 'Florence-Richard-Wedding' : 'Florence-Richard-Reception'}.ics`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('Calendar invite (.ics) downloaded!');
+    }
+
+    // -----------------------------------------------------------------------
+    // 8. RSVP & Blessings Wall Modal Logic
+    // -----------------------------------------------------------------------
+    function openRsvpModal() {
+      const modal = document.getElementById('rsvp-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeRsvpModal() {
+      const modal = document.getElementById('rsvp-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function submitBlessing(e) {
+      e.preventDefault();
+      const name = document.getElementById('guest-name').value.trim();
+      const eventChoice = document.getElementById('guest-event').value;
+      const message = document.getElementById('guest-message').value.trim();
+      if (!name || !message) return;
+
+      const grid = document.getElementById('blessings-grid');
+      const card = document.createElement('div');
+      card.className = 'bg-white/95 backdrop-blur-md border border-gold/50 rounded-3xl p-6 shadow-md flex flex-col justify-between animate-fade-in';
+      
+      const p = document.createElement('p');
+      p.className = 'font-serif italic text-lg text-charcoal/90 leading-relaxed';
+      p.textContent = `“${message}”`;
+
+      const footer = document.createElement('div');
+      footer.className = 'mt-4 pt-3 border-t border-gold/20 flex items-center justify-between';
+      
+      const author = document.createElement('span');
+      author.className = 'font-serif font-semibold text-gold-dark';
+      author.textContent = name;
+
+      const badge = document.createElement('span');
+      badge.className = 'font-sans text-[10px] uppercase tracking-wider text-charcoal/60';
+      badge.textContent = eventChoice;
+
+      footer.appendChild(author);
+      footer.appendChild(badge);
+      card.appendChild(p);
+      card.appendChild(footer);
+
+      grid.prepend(card);
+      document.getElementById('rsvp-form').reset();
+      closeRsvpModal();
+      burstPetals();
+      showToast(`Thank you, ${name}! Your blessing has been added.`);
+    }
+
+    // -----------------------------------------------------------------------
+    // 9. Scroll Reveal IntersectionObserver
+    // -----------------------------------------------------------------------
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+
+    // -----------------------------------------------------------------------
+    // 10. Three.js 3D Floating Watercolor Rose Petals & Golden Stardust
+    // -----------------------------------------------------------------------
+    let scene, camera, renderer, petals = [], sparkles;
+    let mouseX = 0, mouseY = 0;
+
+    function initThreeScene() {
+      const canvas = document.getElementById('three-canvas');
+      if (!canvas || typeof THREE === 'undefined') return;
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 100);
+      camera.position.z = 18;
+
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Soft warm ambient & directional lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.95);
+      scene.add(ambientLight);
+      const dirLight = new THREE.DirectionalLight(0xffe8b5, 0.7);
+      dirLight.position.set(5, 10, 7);
+      scene.add(dirLight);
+
+      // Custom 3D Curved Rose Petal Geometry
+      const petalShape = new THREE.Shape();
+      petalShape.moveTo(0, 0);
+      petalShape.bezierCurveTo(0.28, 0.25, 0.35, 0.65, 0, 0.85);
+      petalShape.bezierCurveTo(-0.35, 0.65, -0.28, 0.25, 0, 0);
+
+      const petalGeo = new THREE.ShapeGeometry(petalShape, 12);
+      // Slight 3D curvature on vertices
+      const pos = petalGeo.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const x = pos.getX(i);
+        const y = pos.getY(i);
+        pos.setZ(i, Math.sin(y * Math.PI) * 0.12 - Math.abs(x) * 0.15);
+      }
+      petalGeo.computeVertexNormals();
+
+      // Palette matching uploaded wedding cards: Blush Pink, Dusty Lavender, Powder Blue, Warm Gold
+      const palette = [0xEBD3D8, 0xD5C7DF, 0xC7DCE5, 0xF3D9DF, 0xE5C675];
+
+      for (let i = 0; i < 42; i++) {
+        const mat = new THREE.MeshStandardMaterial({
+          color: palette[i % palette.length],
+          side: THREE.DoubleSide,
+          transparent: true,
+          opacity: 0.78,
+          roughness: 0.55,
+          metalness: i % 5 === 4 ? 0.45 : 0.05
+        });
+
+        const mesh = new THREE.Mesh(petalGeo, mat);
+        resetPetal(mesh, true);
+        scene.add(mesh);
+        petals.push({
+          mesh,
+          speedY: 0.012 + Math.random() * 0.018,
+          speedX: (Math.random() - 0.5) * 0.015,
+          rotSpeedX: (Math.random() - 0.5) * 0.025,
+          rotSpeedY: (Math.random() - 0.5) * 0.025,
+          rotSpeedZ: (Math.random() - 0.5) * 0.02,
+          swayOffset: Math.random() * Math.PI * 2
+        });
+      }
+
+      // Golden Stardust Particles
+      const sparkCount = 90;
+      const sparkGeo = new THREE.BufferGeometry();
+      const sparkPositions = new Float32Array(sparkCount * 3);
+      for (let i = 0; i < sparkCount * 3; i += 3) {
+        sparkPositions[i] = (Math.random() - 0.5) * 32;
+        sparkPositions[i + 1] = (Math.random() - 0.5) * 22;
+        sparkPositions[i + 2] = (Math.random() - 0.5) * 14;
+      }
+      sparkGeo.setAttribute('position', new THREE.BufferAttribute(sparkPositions, 3));
+      const sparkMat = new THREE.PointsMaterial({
+        color: 0xDFBE6F,
+        size: 0.16,
+        transparent: true,
+        opacity: 0.75
+      });
+      sparkles = new THREE.Points(sparkGeo, sparkMat);
+      scene.add(sparkles);
+
+      window.addEventListener('resize', onWindowResize);
+      window.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+        mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+      });
+    }
+
+    function resetPetal(mesh, initial = false) {
+      mesh.position.x = (Math.random() - 0.5) * 28;
+      mesh.position.y = initial ? (Math.random() - 0.5) * 22 : 12 + Math.random() * 4;
+      mesh.position.z = (Math.random() - 0.5) * 10;
+      const scale = 0.45 + Math.random() * 0.55;
+      mesh.scale.set(scale, scale, scale);
+      mesh.rotation.set(Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI);
+    }
+
+    function burstPetals() {
+      petals.forEach((p, idx) => {
+        if (idx % 2 === 0) {
+          p.mesh.position.set((Math.random() - 0.5) * 8, 2 + Math.random() * 5, 4);
+          p.speedY = 0.025 + Math.random() * 0.02;
+        }
+      });
+    }
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    let clockTime = 0;
+    function animateLoop() {
+      requestAnimationFrame(animateLoop);
+      clockTime += 0.015;
+
+      // Subtle camera parallax with mouse
+      if (camera) {
+        camera.position.x += (mouseX * 1.2 - camera.position.x) * 0.04;
+        camera.position.y += (-mouseY * 0.8 - camera.position.y) * 0.04;
+        camera.lookAt(0, 0, 0);
+      }
+
+      petals.forEach((p) => {
+        p.mesh.position.y -= p.speedY;
+        p.mesh.position.x += p.speedX + Math.sin(clockTime + p.swayOffset) * 0.008;
+        p.mesh.rotation.x += p.rotSpeedX;
+        p.mesh.rotation.y += p.rotSpeedY;
+        p.mesh.rotation.z += p.rotSpeedZ;
+
+        if (p.mesh.position.y < -12) {
+          resetPetal(p.mesh, false);
+        }
+      });
+
+      if (sparkles) {
+        sparkles.rotation.y = clockTime * 0.06;
+        sparkles.position.y = Math.sin(clockTime * 0.5) * 0.4;
+      }
+
+      if (renderer && scene && camera) {
+        renderer.render(scene, camera);
+      }
+    }
+
+    window.onload = function () {
+      initThreeScene();
+      animateLoop();
+    };
+  </script>
+</body>
+</html>
