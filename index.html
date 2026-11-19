@@ -278,7 +278,7 @@
         </svg>
 
         <!-- INSIDE REVEALED INVITATION CONTENT -->
-        <div id="invitation" class="relative z-10 px-6 py-10 sm:px-14 sm:py-12 flex flex-col items-center text-center justify-between min-h-[540px] sm:min-h-[600px]">
+        <div id="invitation" class="hidden relative z-10 px-6 py-10 sm:px-14 sm:py-12 flex flex-col items-center text-center justify-between min-h-[540px] sm:min-h-[600px]">
           
           <!-- Botanical R & F Monogram Emblem -->
           <div class="relative w-24 h-24 sm:w-28 sm:h-28 flex items-center justify-center mb-2">
@@ -881,7 +881,7 @@
   const overlay = document.getElementById('cover-overlay');
 
   // Open the 3D invitation doors
-  card.classList.add('card-opened');
+  document.getElementById('invitation').classList.remove('hidden');
 
   // Celebration effects
   burstPetals();
